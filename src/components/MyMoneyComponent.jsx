@@ -1,6 +1,6 @@
 import React from 'react'
 
-import './assets/css/item.css'
+import '../assets/css/item.css'
 import ItemComponent from './ItemComponent';
 
 function MyMoneyComponent(props) {
