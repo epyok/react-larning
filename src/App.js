@@ -1,7 +1,7 @@
 //import logo from './logo.svg';
 import './App.css';
 
-import MyMoneyView from './views/MyMoneyView';
+import MyMoneyView from './pages/MyMoneyView';
 
 
 function App() {
