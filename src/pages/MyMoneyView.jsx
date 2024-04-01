@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useReducer } from "react";
 //import { v4 as uuidv4 } from 'uuid';
 
 import { useState } from "react"; //ใช้กำหนดค่า const [items, setItem] = useState(initData); แบบตัวแปรและฟังชั่น
+
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 import TitleComponent from "../components/TitleComponent";
 import MyMoneyComponent from "../components/MyMoneyComponent";
@@ -41,7 +43,41 @@ function MyMoneyView() {
 
         setReportIncome(income)
         setReportExpense(expense)
-    }, [items,reportExpense,reportIncome])
+    }, [items, reportExpense, reportIncome])
+
+    //reducer state
+    const [count,] = useState(0);
+
+    const reducer = (state, action) => {
+        switch (action.type) {
+            case "ADD":
+                return state + 1
+            case "DELETE":
+                return state - 1
+            case "CLEAR":
+                return 0
+            default:
+                break;
+        }
+    }
+
+    const [result, dispatch] = useReducer(reducer, count)
+
+    const [showReport, setShowReport] = useState(true);
+
+    const reducerShowReport = (state, action) => {
+        switch (action.type) {
+            case "SHOW":
+                return setShowReport(true)
+            case "HIDE":
+                return setShowReport(false)
+            default:
+                break;
+        }
+    }
+
+    const [, dispatchs] = useReducer(reducerShowReport, count)
+
 
     return ( //component ที่อยู่ภายในจะสามารถแสดง value ได้ผ่าน consumer
         <DataContext.Provider value={
@@ -53,9 +89,27 @@ function MyMoneyView() {
         }>
             <div>
                 <TitleComponent title="แอพบัญชี รายรับ-รายจ่าย" />
-                <ReportComponent />
+                <Router>
+                    <div>
+                        <ul>
+                            <li>
+                                <Link to="/aa">ข้อมูลบัญชี</Link>
+                            </li>
+                            <li>
+                                <a href=""> บันทุกข้อมูล</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <Routes>
+                        <Route path='/aa' element={<ReportComponent />}></Route>
+                    </Routes>
+                </Router>
+                <button onClick={() => { dispatchs({ type: "SHOW" }) }}>แสดง</button><button onClick={() => { dispatchs({ type: "HIDE" }) }}>ซ่อน</button>
+                {showReport && < ReportComponent />}
                 <FormComponent onAddItem={onAddNewItem} />
                 <MyMoneyComponent items={items} />
+                <p> {result} </p>
+                <button onClick={() => { dispatch({ type: "ADD" }) }}> เพิ่ม </button> <button onClick={() => { dispatch({ type: "DELETE" }) }}> ลด </button> <button onClick={() => { dispatch({ type: "CLEAR" }) }}> ล้าง </button>
             </div>
         </DataContext.Provider>
     );
